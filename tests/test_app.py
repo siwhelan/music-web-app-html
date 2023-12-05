@@ -1,20 +1,26 @@
 from playwright.sync_api import Page, expect
 
-# Tests for your routes go here
 
-# === Example Code Below ===
+def test_get_albums(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    div_tag = page.locator("article")
+    expect(div_tag).to_have_text(
+        ["Demon Days Released: 2005", "Doolittle Released: 1989"]
+    )
 
-"""
-We can get an emoji from the /emoji page
-"""
-def test_get_emoji(page, test_web_address): # Note new parameters
-    # We load a virtual browser and navigate to the /emoji page
-    page.goto(f"http://{test_web_address}/emoji")
 
-    # We look at the <strong> tag
-    strong_tag = page.locator("strong")
+def test_get_album_by_id(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    page.goto(f"http://{test_web_address}/albums/1")
+    expect(page.locator("h1")).to_have_text("Demon Days")
+    expect(page.locator("p")).to_have_text("Release year: 2005")
 
-    # We assert that it has the text ":)"
-    expect(strong_tag).to_have_text(":)")
 
-# === End Example Code ===
+# test individual album page
+def test_visit_album_page(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    page.goto(f"http://{test_web_address}/albums")
+    page.click("text=Demon Days")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Demon Days")
