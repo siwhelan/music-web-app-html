@@ -25,3 +25,19 @@ def test_call_create(db_connection):
         Album(2, "Doolittle", 1989, 2),
         Album(3, "Voyager", 2022, 3),
     ]
+
+
+# test calling find() returns album by id
+def test_call_find(db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    repo = AlbumRepository(db_connection)
+    album = repo.fetch_album_by_id(1)
+    assert album == Album(1, "Demon Days", 2005, 1)
+
+
+# test calling find() returns None if no album found
+def test_call_find_none(db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    repo = AlbumRepository(db_connection)
+    album = repo.fetch_album_by_id(100)
+    assert album == None

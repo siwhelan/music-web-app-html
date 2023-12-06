@@ -30,3 +30,16 @@ def test_get_artist_by_id(page, test_web_address, db_connection):
     db_connection.seed("seeds/music_store.sql")
     page.goto(f"http://{test_web_address}/artists/1")
     expect(page.locator("h1")).to_have_text("Gorillaz")
+
+
+# test app.py route @app.route("/albums", methods=["POST"])
+def test_post_albums(page, test_web_address, db_connection):
+    db_connection.seed("seeds/music_store.sql")
+    page.goto(f"http://{test_web_address}/albums/new")
+    page.fill('input[name="title"]', "New Album")
+    page.fill('input[name="release_year"]', "2021")
+    page.fill('input[name="artist_id"]', "1")
+    page.click("text=Create Album")
+    page.wait_for_url(f"http://{test_web_address}/albums/*")
+    expect(page.locator("h1")).to_have_text("New Album")
+    expect(page.locator("p")).to_have_text("Release year: 2021")

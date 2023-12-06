@@ -14,20 +14,29 @@ class AlbumRepository:
         return albums
 
     def create(self, album):
+        # Execute the INSERT statement
         self._connection.execute(
-            "INSERT into albums (title, release_year, artist_id) VALUES (%s, %s, %s)",
+            "INSERT INTO albums (title, release_year, artist_id) VALUES (%s, %s, %s)",
             [album.title, album.release_year, album.artist_id],
         )
-        return None
+
+        # Fetch the last inserted id
+        result = self._connection.execute("SELECT LASTVAL()")
+
+        # Extract the last inserted id
+        if result:
+            last_id = result[0]["lastval"]
+            album.id = last_id
+        else:
+            album.id = None
+
+        return album
 
     def fetch_album_by_id(self, album_id):
         rows = self._connection.execute(
             "SELECT * FROM albums WHERE id = %s", [album_id]
         )
-
-        # Check if any row is returned
         if rows:
-            # Assuming the first row is the desired album
             row = rows[0]
             return Album(row["id"], row["title"], row["release_year"], row["artist_id"])
         else:
