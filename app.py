@@ -26,11 +26,11 @@ def post_albums():
     return "", 200
 
 
-@app.route("/artists")
-def get_artists():
-    connection = get_flask_database_connection(app)
-    repo = ArtistRepository(connection)
-    return "\n".join(f"{artist}" for artist in repo.all())
+# @app.route("/artists")
+# def get_artists():
+#     connection = get_flask_database_connection(app)
+#     repo = ArtistRepository(connection)
+#     return "\n".join(f"{artist}" for artist in repo.all())
 
 
 @app.route("/artists", methods=["POST"])
@@ -50,6 +50,14 @@ def get_albums_dynamic():
     return render_template("albums/index.html", albums=albums)
 
 
+@app.route("/artists")
+def get_artists_dynamic():
+    connection = get_flask_database_connection(app)
+    repo = ArtistRepository(connection)
+    artists = repo.all()
+    return render_template("artists/artists.html", artists=artists)
+
+
 @app.route("/albums/<int:album_id>")
 def get_album(album_id):
     connection = get_flask_database_connection(app)
@@ -59,19 +67,13 @@ def get_album(album_id):
     return render_template("albums/album.html", album=album)
 
 
-# == Example Code Below ==
-
-
-# GET /emoji
-# Returns a smiley face in HTML
-# Try it:
-#   ; open http://localhost:5001/emoji
-@app.route("/emoji", methods=["GET"])
-def get_emoji():
-    # We use `render_template` to send the user the file `emoji.html`
-    # But first, it gets processed to look for placeholders like {{ emoji }}
-    # These placeholders are replaced with the values we pass in as arguments
-    return render_template("emoji.html", emoji=":)")
+@app.route("/artists/<int:artist_id>")
+def get_artist(artist_id):
+    connection = get_flask_database_connection(app)
+    repo = ArtistRepository(connection)
+    artist = repo.find_by_id(artist_id)
+    # print(album)
+    return render_template("artists/artist.html", artist=artist)
 
 
 # This imports some more example routes for you to see how they work

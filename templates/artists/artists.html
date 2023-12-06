@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist</title>
+</head>
+<body>
+  <h1>Artist</h1>
+
+    {% for artist in artists %}
+    <article>
+      <h2> 
+        <a href="/artists/{{artist.id}}">{{artist.artist}}</a></h2>
+    </article>
+    {% endfor %}
+</body>
+</html>
